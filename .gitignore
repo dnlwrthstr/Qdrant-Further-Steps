@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+*.sqlite3
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MacOS
+.DS_Store
+
+# Environment Variables
+.env
+
+# VSCode or PyCharm
+.vscode/
+.idea/
+
+# Output
+*.log
+*.out
+*.tmp
+
+# Data
+data/
