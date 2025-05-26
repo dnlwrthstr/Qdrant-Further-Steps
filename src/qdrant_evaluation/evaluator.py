@@ -1,17 +1,18 @@
 from qdrant_client import QdrantClient, models
 import time
-from typing import List, Set, Dict, Tuple
+from typing import List, Set, Dict, Tuple, Any
 import pandas as pd
+from qdrant_evaluation.collection import wait_for_collection_green
 
 def precision_k(ann_results: Set, exact_results: Set, k: int = 10) -> float:
     """
     Calculate precision@k metric.
-    
+
     Args:
         ann_results (Set): Set of IDs from approximate nearest neighbor search
         exact_results (Set): Set of IDs from exact k-NN search
         k (int): Number of results to consider
-        
+
     Returns:
         float: Precision@k value
     """
@@ -20,13 +21,13 @@ def precision_k(ann_results: Set, exact_results: Set, k: int = 10) -> float:
 def get_ann_points(client: QdrantClient, collection_name: str, embedding: List, k: int = 10) -> Tuple[List, float]:
     """
     Get approximate nearest neighbor points.
-    
+
     Args:
         client (QdrantClient): Qdrant client
         collection_name (str): Name of the collection to query
         embedding (List): Query embedding vector
         k (int): Number of results to return
-        
+
     Returns:
         Tuple[List, float]: List of result IDs and query execution time
     """
@@ -43,14 +44,14 @@ def get_ann_points(client: QdrantClient, collection_name: str, embedding: List, 
 def get_hnsw_points(client: QdrantClient, collection_name: str, embedding: List, hnsw_ef: int, k: int = 10) -> Tuple[List, float]:
     """
     Get HNSW search results with specific ef parameter.
-    
+
     Args:
         client (QdrantClient): Qdrant client
         collection_name (str): Name of the collection to query
         embedding (List): Query embedding vector
         hnsw_ef (int): HNSW ef search parameter
         k (int): Number of results to return
-        
+
     Returns:
         Tuple[List, float]: List of result IDs and query execution time
     """
@@ -68,13 +69,13 @@ def get_hnsw_points(client: QdrantClient, collection_name: str, embedding: List,
 def get_knn_points(client: QdrantClient, collection_name: str, embedding: List, k: int = 10) -> Tuple[List, float]:
     """
     Get exact k-NN search results.
-    
+
     Args:
         client (QdrantClient): Qdrant client
         collection_name (str): Name of the collection to query
         embedding (List): Query embedding vector
         k (int): Number of results to return
-        
+
     Returns:
         Tuple[List, float]: List of result IDs and query execution time
     """
@@ -92,13 +93,13 @@ def get_knn_points(client: QdrantClient, collection_name: str, embedding: List, 
 def get_ann_points_quantized(client: QdrantClient, collection_name: str, embedding: List, k: int = 10) -> Tuple[List, float]:
     """
     Get approximate nearest neighbor points with quantization.
-    
+
     Args:
         client (QdrantClient): Qdrant client
         collection_name (str): Name of the collection to query
         embedding (List): Query embedding vector
         k (int): Number of results to return
-        
+
     Returns:
         Tuple[List, float]: List of result IDs and query execution time
     """
@@ -121,13 +122,13 @@ def get_ann_points_quantized(client: QdrantClient, collection_name: str, embeddi
 def get_knn_points_ignoring_quantization(client: QdrantClient, collection_name: str, embedding: List, k: int = 10) -> Tuple[List, float]:
     """
     Get exact k-NN search results ignoring quantization.
-    
+
     Args:
         client (QdrantClient): Qdrant client
         collection_name (str): Name of the collection to query
         embedding (List): Query embedding vector
         k (int): Number of results to return
-        
+
     Returns:
         Tuple[List, float]: List of result IDs and query execution time
     """
@@ -147,12 +148,12 @@ def get_knn_points_ignoring_quantization(client: QdrantClient, collection_name: 
 def evaluate_ann(client: QdrantClient, collection_name: str, embeddings: Dict) -> Dict:
     """
     Evaluate ANN search performance.
-    
+
     Args:
         client (QdrantClient): Qdrant client
         collection_name (str): Name of the collection to query
         embeddings (Dict): Dictionary of embeddings to evaluate
-        
+
     Returns:
         Dict: Evaluation results
     """
@@ -175,19 +176,19 @@ def evaluate_ann(client: QdrantClient, collection_name: str, embeddings: Dict) -
 def evaluate_hnsw_ef(client: QdrantClient, collection_name: str, embeddings: Dict, hnsw_ef_values: List[int] = None) -> List[Dict]:
     """
     Evaluate HNSW ef parameter performance.
-    
+
     Args:
         client (QdrantClient): Qdrant client
         collection_name (str): Name of the collection to query
         embeddings (Dict): Dictionary of embeddings to evaluate
         hnsw_ef_values (List[int]): List of ef values to evaluate
-        
+
     Returns:
         List[Dict]: Evaluation results for each ef value
     """
     if hnsw_ef_values is None:
         hnsw_ef_values = [10, 20, 50, 100, 200]
-    
+
     knn_results = [get_knn_points(client, collection_name, vector) for _, vector in embeddings.items()]
 
     results_list = []
@@ -214,12 +215,12 @@ def evaluate_hnsw_ef(client: QdrantClient, collection_name: str, embeddings: Dic
 def evaluate_ann_quantized(client: QdrantClient, collection_name: str, embeddings: Dict) -> Dict:
     """
     Evaluate ANN search performance with quantization.
-    
+
     Args:
         client (QdrantClient): Qdrant client
         collection_name (str): Name of the collection to query
         embeddings (Dict): Dictionary of embeddings to evaluate
-        
+
     Returns:
         Dict: Evaluation results
     """
@@ -242,10 +243,10 @@ def evaluate_ann_quantized(client: QdrantClient, collection_name: str, embedding
 def compute_avg_metrics(data: List[Dict]) -> Dict[str, float]:
     """
     Compute the average of all keys starting with 'avg' across a list of dictionaries.
-    
+
     Args:
         data (List[Dict]): List of dictionaries with metrics
-        
+
     Returns:
         Dict[str, float]: Dictionary with average values for 'avg*' keys
     """
@@ -265,28 +266,67 @@ def compute_avg_metrics(data: List[Dict]) -> Dict[str, float]:
 def results_to_dataframe(results: List[Dict], m: int = None, ef_construct: int = None) -> pd.DataFrame:
     """
     Convert results to a pandas DataFrame.
-    
+
     Args:
         results (List[Dict]): List of result dictionaries
         m (int): HNSW M parameter
         ef_construct (int): HNSW ef_construct parameter
-        
+
     Returns:
         pd.DataFrame: DataFrame with results
     """
     df = pd.DataFrame(results)
-    
+
     if m is not None:
         df['m'] = m
-    
+
     if ef_construct is not None:
         df['ef_construct'] = ef_construct
-    
+
     # Round floating point numbers for better readability
     if 'avg_precision' in df.columns:
         df['avg_precision'] = df['avg_precision'].round(6)
-    
+
     if 'avg_query_time_ms' in df.columns:
         df['avg_query_time_ms'] = df['avg_query_time_ms'].round(6)
-    
+
     return df
+
+
+def evaluate_collection_with_config(client: QdrantClient, collection_name: str, config: Dict[str, Any], test_dataset: Dict) -> Dict:
+    """
+    Update a collection with a specific HNSW configuration and evaluate its performance.
+
+    Args:
+        client (QdrantClient): Qdrant client
+        collection_name (str): Name of the collection to update and evaluate
+        config (Dict[str, Any]): HNSW configuration (m and ef_construct values)
+        test_dataset (Dict): Test dataset for evaluation
+
+    Returns:
+        Dict: Evaluation results
+    """
+    print(f"Updating collection {collection_name} with m={config['m']}, ef_construct={config['ef_construct']}...")
+
+    # Update collection with the specified HNSW configuration
+    from qdrant_evaluation import update_collection_config
+    update_collection_config(
+        client, 
+        collection_name, 
+        m=config['m'], 
+        ef_construct=config['ef_construct']
+    )
+
+    # Wait for the collection to be ready
+    wait_for_collection_green(client, collection_name)
+
+    # Evaluate the updated collection
+    print(f"Evaluating collection {collection_name}...")
+    results = evaluate_ann(client, collection_name, test_dataset)
+
+    # Add configuration parameters to results
+    results['m'] = config['m']
+    results['ef_construct'] = config['ef_construct']
+    results['collection'] = collection_name
+
+    return results

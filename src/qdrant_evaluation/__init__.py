@@ -7,6 +7,7 @@ different configurations of the Qdrant vector database.
 
 from .client import get_client, load_environment, update_collection_config
 from .embedding import get_embedding, load_test_dataset
+from .collection import wait_for_collection_green
 from .evaluator import (
     precision_k,
     get_ann_points,
@@ -18,7 +19,8 @@ from .evaluator import (
     evaluate_hnsw_ef,
     evaluate_ann_quantized,
     compute_avg_metrics,
-    results_to_dataframe
+    results_to_dataframe,
+    evaluate_collection_with_config
 )
 
 __all__ = [
@@ -27,6 +29,7 @@ __all__ = [
     'update_collection_config',
     'get_embedding',
     'load_test_dataset',
+    'wait_for_collection_green',
     'precision_k',
     'get_ann_points',
     'get_hnsw_points',
@@ -37,5 +40,6 @@ __all__ = [
     'evaluate_hnsw_ef',
     'evaluate_ann_quantized',
     'compute_avg_metrics',
-    'results_to_dataframe'
+    'results_to_dataframe',
+    'evaluate_collection_with_config'
 ]
