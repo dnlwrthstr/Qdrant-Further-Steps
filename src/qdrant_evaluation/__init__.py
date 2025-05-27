@@ -18,6 +18,7 @@ from .evaluator import (
     evaluate_ann,
     evaluate_hnsw_ef,
     evaluate_ann_quantized,
+    evaluate_with_quantization,
     compute_avg_metrics,
     results_to_dataframe,
     evaluate_collection_with_config
@@ -39,6 +40,7 @@ __all__ = [
     'evaluate_ann',
     'evaluate_hnsw_ef',
     'evaluate_ann_quantized',
+    'evaluate_with_quantization',
     'compute_avg_metrics',
     'results_to_dataframe',
     'evaluate_collection_with_config'

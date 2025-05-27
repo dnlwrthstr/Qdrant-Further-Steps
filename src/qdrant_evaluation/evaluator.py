@@ -240,6 +240,80 @@ def evaluate_ann_quantized(client: QdrantClient, collection_name: str, embedding
         "avg_query_time_ms": avg_query_time_ms
     }
 
+def evaluate_with_quantization(client: QdrantClient, collection_name: str, embeddings: Dict, rescore: bool, k: int = 10) -> Dict:
+    """
+    Evaluate the collection with quantization settings.
+
+    Args:
+        client (QdrantClient): Qdrant client
+        collection_name (str): Name of the collection to query
+        embeddings (Dict): Dictionary of embeddings to evaluate
+        rescore (bool): Whether to use rescoring in quantization search params
+        k (int): Number of results to return (default: 10)
+
+    Returns:
+        Dict: Results including average precision and query time
+    """
+    search_params = models.SearchParams(
+        quantization=models.QuantizationSearchParams(
+            rescore=rescore,
+            oversampling=2.0,
+        )
+    )
+
+    # Get ground truth results (without quantization)
+    ground_truth_results = []
+    ground_truth_times = []
+
+    for query_text, query_vector in embeddings.items():
+        start_time = time.time()
+        result = client.query_points(
+            collection_name=collection_name,
+            query=query_vector,
+            limit=k,
+            search_params=models.SearchParams(
+                quantization=models.QuantizationSearchParams(ignore=True)
+            ),
+        ).points
+        query_time = (time.time() - start_time) * 1000  # Convert to ms
+        ground_truth_results.append([point.id for point in result])
+        ground_truth_times.append(query_time)
+
+    # Get quantized search results
+    quantized_results = []
+    quantized_times = []
+
+    for query_text, query_vector in embeddings.items():
+        start_time = time.time()
+        result = client.query_points(
+            collection_name=collection_name,
+            query=query_vector,
+            limit=k,
+            search_params=search_params,
+        ).points
+        query_time = (time.time() - start_time) * 1000  # Convert to ms
+        quantized_results.append([point.id for point in result])
+        quantized_times.append(query_time)
+
+    # Calculate precision
+    precisions = []
+    for gt_ids, quant_ids in zip(ground_truth_results, quantized_results):
+        precision = len(set(gt_ids) & set(quant_ids)) / len(gt_ids)
+        precisions.append(precision)
+
+    avg_precision = sum(precisions) / len(precisions)
+    avg_ground_truth_time = sum(ground_truth_times) / len(ground_truth_times)
+    avg_quantized_time = sum(quantized_times) / len(quantized_times)
+
+    return {
+        "rescore": rescore,
+        "avg_precision": avg_precision,
+        "avg_ground_truth_time_ms": avg_ground_truth_time,
+        "avg_quantized_time_ms": avg_quantized_time,
+        "speedup_factor": avg_ground_truth_time / avg_quantized_time
+    }
+
+
 def compute_avg_metrics(data: List[Dict]) -> Dict[str, float]:
     """
     Compute the average of all keys starting with 'avg' across a list of dictionaries.
