@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     name="qdrant_evaluation",
     version="0.1.0",
-    packages=["qdrant_evaluation", "qdrant_data_ingestion", "qdrant_simple_rag"],
+    packages=["qdrant_evaluation", "qdrant_data_ingestion", "qdrant_simple_rag", "utils"],
     package_dir={"": "src"},
     install_requires=[
         "qdrant-client>=1.1.0",

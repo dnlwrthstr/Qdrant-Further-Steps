@@ -13,26 +13,26 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from src.qdrant_evaluation import (
     get_client,
-    load_environment,
     get_embedding,
     evaluate_ann,
     evaluate_hnsw_ef,
     evaluate_ann_quantized,
     results_to_dataframe
 )
+from src.utils.environment import load_environment
 
 def main():
     # Load environment variables
     env_vars = load_environment()
     print(f"Loaded environment variables: {', '.join(env_vars.keys())}")
-    
+
     # Initialize Qdrant client
     client = get_client(host="localhost", port=6333)
     print("Connected to Qdrant server")
-    
+
     # Collection name
     collection_name = 'arxiv_papers'
-    
+
     # Load test dataset
     try:
         with open("queries_embeddings.json", 'r', encoding='utf-8') as file:
@@ -49,22 +49,22 @@ def main():
         else:
             print("Failed to create sample embedding. Please check your OpenAI API key.")
             return
-    
+
     # Evaluate ANN search
     print("\nEvaluating ANN search...")
     ann_results = evaluate_ann(client, collection_name, embeddings)
     print(f"ANN Results: {ann_results}")
-    
+
     # Evaluate HNSW ef parameter
     print("\nEvaluating HNSW ef parameter...")
     hnsw_ef_values = [10, 20, 50]
     hnsw_results = evaluate_hnsw_ef(client, collection_name, embeddings, hnsw_ef_values)
-    
+
     # Convert results to DataFrame
     df = results_to_dataframe(hnsw_results)
     print("\nHNSW ef parameter evaluation results:")
     print(df)
-    
+
     # Evaluate quantized search
     print("\nEvaluating quantized search...")
     quantized_results = evaluate_ann_quantized(client, collection_name, embeddings)

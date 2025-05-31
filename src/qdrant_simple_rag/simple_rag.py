@@ -1,18 +1,13 @@
 import os
 from openai import OpenAI
 from qdrant_client import QdrantClient
-from dotenv import load_dotenv
+from utils.environment import load_environment, get_environment_variable
 
 # Load environment variables
-load_dotenv()
-
-env_path = os.path.expanduser("~/.env")
-
-# Load environment variables from .env file
-load_dotenv(dotenv_path=env_path, override=True)
+env_vars = load_environment()
 
 # Configs
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "your-openai-api-key")
+OPENAI_API_KEY = get_environment_variable("OPENAI_API_KEY", "your-openai-api-key")
 COLLECTION_NAME = "arxiv_papers"
 EMBEDDING_MODEL = "text-embedding-ada-002"
 

@@ -2,10 +2,10 @@ from openai import OpenAI
 import os
 from typing import Union, List
 import json
-from dotenv import load_dotenv
+from utils.environment import load_environment, get_environment_variable
 
 # Load environment variables
-load_dotenv()
+load_environment()
 
 def get_embedding(text: str) -> Union[List[float], None]:
     """
@@ -17,7 +17,7 @@ def get_embedding(text: str) -> Union[List[float], None]:
     Returns:
         Union[List[float], None]: The embedding vector or None if an error occurs
     """
-    api_key = os.getenv("OPENAI_API_KEY")
+    api_key = get_environment_variable("OPENAI_API_KEY")
     if not api_key or api_key == "your-openai-api-key":
         print("❌ Error: OpenAI API key is missing or invalid. Please set the OPENAI_API_KEY environment variable.")
         return None
