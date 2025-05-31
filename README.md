@@ -168,6 +168,54 @@ print(f"Ingested {total_points} points into collection")
 python examples/data_ingestion_example.py
 ```
 
+## Retrieval-Augmented Generation (RAG) with Qdrant
+
+This project includes a simple implementation of Retrieval-Augmented Generation (RAG) using Qdrant and OpenAI.
+
+### What is RAG?
+
+RAG (Retrieval-Augmented Generation) is a technique that enhances large language models by:
+1. Retrieving relevant information from a knowledge base (in this case, Qdrant vector database)
+2. Augmenting the prompt to the language model with this retrieved context
+3. Generating more accurate, up-to-date, and contextually relevant responses
+
+### Using the RAG Functionality
+
+The RAG implementation in this project allows you to ask questions and get answers based on documents stored in a Qdrant collection.
+
+```python
+from qdrant_simple_rag import ask_question
+
+# Ask a question and get an answer
+question = "What are the latest advancements in quantum computing?"
+answer = ask_question(question, top_k=5)
+print(answer)
+```
+
+### Running the RAG Example
+
+```bash
+# Make sure you're in the project root directory
+python examples/simple_rag_example.py
+```
+
+This will run a demo with several example questions.
+
+### Interactive CLI
+
+You can also use the interactive CLI to ask questions:
+
+```bash
+python -m qdrant_simple_rag.simple_rag
+```
+
+### Requirements for RAG
+
+Before using the RAG functionality, make sure:
+1. Qdrant is running (see "Installing Qdrant with Docker" section)
+2. You have an OpenAI API key in your `.env` file
+3. You have a collection in Qdrant with documents and their embeddings (the default collection name is "arxiv_papers")
+
 ## Project Structure
 - `notebooks/`: Jupyter notebooks for interactive analysis
 - `src/qdrant_evaluation/`: Python package with core functionality
@@ -178,8 +226,12 @@ python examples/data_ingestion_example.py
 - `src/qdrant_data_ingestion/`: Python package for data ingestion
   - `data_ingestion.py`: Utilities for ingesting data into Qdrant
   - `__init__.py`: Package exports and documentation
+- `src/qdrant_simple_rag/`: Python package for RAG functionality
+  - `simple_rag.py`: Implementation of RAG using Qdrant and OpenAI
+  - `__init__.py`: Package exports and documentation
 - `examples/`: Example scripts demonstrating package usage
   - `basic_evaluation.py`: Basic example of evaluating Qdrant configurations
   - `data_ingestion_example.py`: Example of ingesting data into Qdrant
+  - `simple_rag_example.py`: Example of using RAG functionality
 - `requirements.txt`: Project dependencies
 - `setup.py`: Package installation configuration
