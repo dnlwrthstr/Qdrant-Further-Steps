@@ -5,10 +5,11 @@ services:
       dockerfile: backend.Dockerfile
     ports:
       - "9090:9090"
+    env_file:
+      - ./.env
     environment:
       - QDRANT_HOST=host.docker.internal
       - QDRANT_PORT=6333
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
     networks:
       - rag_network
 

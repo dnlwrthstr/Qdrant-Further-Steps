@@ -7,6 +7,7 @@ from utils.environment import load_environment, get_environment_variable
 env_vars = load_environment()
 
 # Configs
+# Always use the API key from the .env file, ignoring any environment variable
 OPENAI_API_KEY = get_environment_variable("OPENAI_API_KEY", "your-openai-api-key")
 COLLECTION_NAME = "arxiv_papers"
 EMBEDDING_MODEL = "text-embedding-ada-002"

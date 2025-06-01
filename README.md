@@ -40,7 +40,7 @@ Alternatively, you can use the scripts in the `scripts` directory to manage the 
 
 ## Environment Setup
 
-Create a `.env` file in your home directory with the following variables:
+Create a `.env` file in the project root directory with the following variables:
 ```
 OPENAI_API_KEY=your_openai_api_key
 HF_API_KEY=your_huggingface_api_key
@@ -257,7 +257,7 @@ For more details, see the [API documentation](src/qdrant_simple_rag/README.md).
 
 Before using the RAG functionality, make sure:
 1. Qdrant is running (see "Installing Qdrant with Docker" section)
-2. You have an OpenAI API key in your `.env` file
+2. You have an OpenAI API key in the `.env` file in the project root
 3. You have a collection in Qdrant with documents and their embeddings (the default collection name is "arxiv_papers")
 
 ## Project Structure
