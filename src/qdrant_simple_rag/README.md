@@ -16,15 +16,59 @@ pip install -r requirements.txt
 
 ## Usage
 
-### Starting the API Server
+### Starting the Application
 
-To start the API server, run:
+You can start the backend and frontend separately or together using the provided scripts:
+
+#### Starting the Backend Only:
+
+```bash
+./scripts/start_rag_app.sh
+```
+
+Or:
+
+```bash
+python scripts/run_simple_rag_api.py
+```
+
+Or:
 
 ```bash
 python -m qdrant_simple_rag.api
 ```
 
-The server will start on port 9080 by default.
+The backend API server will start on port 9090.
+
+#### Starting the Frontend Only:
+
+```bash
+./scripts/start_frontend.sh
+```
+
+The frontend server will start on port 9080.
+
+#### Starting Both Backend and Frontend:
+
+```bash
+./scripts/start_rag_app.py
+```
+
+Or:
+
+```bash
+python scripts/start_rag_app.py
+```
+
+When both are running:
+- Backend API server runs on port 9090
+- Frontend server runs on port 9080
+
+You can access the frontend by opening a web browser and navigating to:
+
+```
+http://localhost:9080
+```
 
 ### API Endpoints
 
@@ -63,10 +107,10 @@ The server will start on port 9080 by default.
 
 ```bash
 # Get welcome message
-curl http://localhost:9080/
+curl http://localhost:9090/
 
 # Ask a question
-curl -X POST http://localhost:9080/ask \
+curl -X POST http://localhost:9090/ask \
   -H "Content-Type: application/json" \
   -d '{"query": "What is RAG?", "top_k": 3}'
 ```
@@ -77,7 +121,7 @@ curl -X POST http://localhost:9080/ask \
 import requests
 
 # Base URL
-base_url = "http://localhost:9080"
+base_url = "http://localhost:9090"
 
 # Get welcome message
 response = requests.get(f"{base_url}/")
@@ -104,5 +148,5 @@ pytest tests/test_simple_rag_api.py
 
 When the server is running, you can access the auto-generated API documentation at:
 
-- Swagger UI: http://localhost:9080/docs
-- ReDoc: http://localhost:9080/redoc
+- Swagger UI: http://localhost:9090/docs
+- ReDoc: http://localhost:9090/redoc

@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
@@ -11,6 +12,15 @@ app = FastAPI(
     title="Qdrant Simple RAG API",
     description="A FastAPI wrapper for Qdrant Simple RAG",
     version="0.1.0",
+)
+
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Define request model
@@ -31,10 +41,10 @@ async def root():
 async def ask(request: QueryRequest):
     """
     Ask a question to the RAG system.
-    
+
     Args:
         request: QueryRequest containing the query and optional top_k parameter
-        
+
     Returns:
         QueryResponse containing the generated answer
     """
@@ -46,7 +56,7 @@ async def ask(request: QueryRequest):
 
 def start():
     """Start the FastAPI server using uvicorn."""
-    uvicorn.run("qdrant_simple_rag.api:app", host="0.0.0.0", port=9080, reload=True)
+    uvicorn.run("qdrant_simple_rag.api:app", host="0.0.0.0", port=9090, reload=True)
 
 if __name__ == "__main__":
     start()

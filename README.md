@@ -34,6 +34,9 @@ Alternatively, you can use the scripts in the `scripts` directory to manage the 
 - `scripts/start_jupyter.sh`: Start the Jupyter notebook server
 - `scripts/stop_jupyter.sh`: Stop the Jupyter notebook server
 - `scripts/run_simple_rag_api.py`: Start the FastAPI server for the RAG functionality
+- `scripts/start_frontend.sh`: Start only the frontend component (using npm)
+- `scripts/start_rag_app.sh`: Start only the backend (shell script)
+- `scripts/start_rag_app.py`: Start both the backend and frontend (Python script)
 
 ## Environment Setup
 
@@ -215,21 +218,35 @@ python -m qdrant_simple_rag.simple_rag
 A FastAPI wrapper is available for accessing the RAG functionality via REST API:
 
 ```bash
-# Start the API server on port 9080
-./scripts/run_simple_rag_api.py
+# Start only the backend
+./scripts/start_rag_app.sh
+
+# Start both the backend and frontend together
+./scripts/start_rag_app.py
 # or
-python -m qdrant_simple_rag.api
+python scripts/start_rag_app.py
 ```
 
-Once the server is running, you can:
-- Access the API documentation at http://localhost:9080/docs
+You can also run the backend and frontend separately:
+
+```bash
+# Start only the backend API
+./scripts/run_simple_rag_api.py
+
+# Start only the frontend (requires Node.js and npm)
+./scripts/start_frontend.sh
+```
+
+Once the application is running, you can:
+- Access the web interface at http://localhost:9080
+- Access the API documentation at http://localhost:9090/docs
 - Use the API endpoints:
   - GET `/`: Welcome message
   - POST `/ask`: Ask a question to the RAG system
 
 Example with curl:
 ```bash
-curl -X POST http://localhost:9080/ask \
+curl -X POST http://localhost:9090/ask \
   -H "Content-Type: application/json" \
   -d '{"query": "What is quantum computing?", "top_k": 3}'
 ```

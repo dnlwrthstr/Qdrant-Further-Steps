@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qdrant Simple RAG</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Qdrant Simple RAG</h1>
+            <p>Ask a scientific question and get an answer powered by RAG technology</p>
+        </header>
+        
+        <main>
+            <div class="query-form">
+                <form id="questionForm">
+                    <div class="form-group">
+                        <label for="query">Your Question:</label>
+                        <textarea id="query" name="query" rows="4" placeholder="Enter your scientific question here..." required></textarea>
+                    </div>
+                    <button type="submit" id="submitBtn">Ask Question</button>
+                </form>
+            </div>
+            
+            <div class="results-container" id="resultsContainer">
+                <div id="loadingIndicator" class="loading-indicator hidden">
+                    <div class="spinner"></div>
+                    <p>Searching and generating answer...</p>
+                </div>
+                
+                <div id="answerContainer" class="answer-container hidden">
+                    <h2>Answer</h2>
+                    <div id="answerContent" class="answer-content"></div>
+                </div>
+                
+                <div id="errorContainer" class="error-container hidden">
+                    <h2>Error</h2>
+                    <div id="errorContent" class="error-content"></div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Powered by Qdrant and OpenAI</p>
+        </footer>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
