@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorContainer = document.getElementById('errorContainer');
     const errorContent = document.getElementById('errorContent');
 
-    // API endpoint (backend runs on port 9090)
-    const API_URL = 'http://localhost:9090/ask';
+    // API endpoint from config.js (injected by server.js)
+    const API_URL = window.CONFIG ? window.CONFIG.API_URL : 'http://localhost:9090/ask';
 
     // Function to show loading state
     function showLoading() {

@@ -11,8 +11,12 @@ OPENAI_API_KEY = get_environment_variable("OPENAI_API_KEY", "your-openai-api-key
 COLLECTION_NAME = "arxiv_papers"
 EMBEDDING_MODEL = "text-embedding-ada-002"
 
+# Get Qdrant connection details from environment variables or use defaults
+QDRANT_HOST = os.environ.get("QDRANT_HOST", "localhost")
+QDRANT_PORT = int(os.environ.get("QDRANT_PORT", 6333))
+
 # Initialize clients
-qdrant = QdrantClient(host="localhost", port=6333)
+qdrant = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 def ask_question(query: str, top_k=5):
