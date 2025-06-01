@@ -33,6 +33,7 @@ Alternatively, you can use the scripts in the `scripts` directory to manage the 
 - `scripts/stop_qdrant.sh`: Stop the Qdrant container
 - `scripts/start_jupyter.sh`: Start the Jupyter notebook server
 - `scripts/stop_jupyter.sh`: Stop the Jupyter notebook server
+- `scripts/run_simple_rag_api.py`: Start the FastAPI server for the RAG functionality
 
 ## Environment Setup
 
@@ -209,6 +210,32 @@ You can also use the interactive CLI to ask questions:
 python -m qdrant_simple_rag.simple_rag
 ```
 
+### REST API
+
+A FastAPI wrapper is available for accessing the RAG functionality via REST API:
+
+```bash
+# Start the API server on port 9080
+./scripts/run_simple_rag_api.py
+# or
+python -m qdrant_simple_rag.api
+```
+
+Once the server is running, you can:
+- Access the API documentation at http://localhost:9080/docs
+- Use the API endpoints:
+  - GET `/`: Welcome message
+  - POST `/ask`: Ask a question to the RAG system
+
+Example with curl:
+```bash
+curl -X POST http://localhost:9080/ask \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What is quantum computing?", "top_k": 3}'
+```
+
+For more details, see the [API documentation](src/qdrant_simple_rag/README.md).
+
 ### Requirements for RAG
 
 Before using the RAG functionality, make sure:
@@ -228,10 +255,14 @@ Before using the RAG functionality, make sure:
   - `__init__.py`: Package exports and documentation
 - `src/qdrant_simple_rag/`: Python package for RAG functionality
   - `simple_rag.py`: Implementation of RAG using Qdrant and OpenAI
+  - `api.py`: FastAPI wrapper for the RAG functionality
+  - `README.md`: Documentation for the API
   - `__init__.py`: Package exports and documentation
 - `examples/`: Example scripts demonstrating package usage
   - `basic_evaluation.py`: Basic example of evaluating Qdrant configurations
   - `data_ingestion_example.py`: Example of ingesting data into Qdrant
   - `simple_rag_example.py`: Example of using RAG functionality
+- `tests/`: Test files for the project
+  - `test_simple_rag_api.py`: Tests for the FastAPI wrapper
 - `requirements.txt`: Project dependencies
 - `setup.py`: Package installation configuration
