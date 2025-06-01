@@ -31,3 +31,6 @@ venv/
 
 # Data
 data/
+
+# Frontend
+frontend/node_modules/
